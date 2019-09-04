@@ -21,8 +21,9 @@ WORKDIR /workdir/
 RUN echo "deb http://ftp.debian.org/debian stretch-backports main" > /etc/apt/sources.list.d/backports.list
 RUN apt-get update
 RUN apt-get upgrade -y
-RUN apt-get -t stretch-backports install -y libgit2-27
+RUN apt-get -t stretch-backports install -y libgit2-27 
 RUN apt-get install -y git
+RUN pip3 install -U pip virtualenv
 
 COPY --from=builder /usr/local/lib/python3.7/site-packages/ /usr/local/lib/python3.7/site-packages/
 COPY --from=builder /usr/local/bin/compare-locales /usr/local/bin/compare-locales

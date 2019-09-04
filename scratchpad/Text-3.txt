@@ -1,0 +1,132 @@
+pyenv-android-l10n) app@8e63b64de512:/workdir/pyenv-android-l10n$ python
+Python 3.7.3 (default, Mar 27 2019, 23:44:26) 
+[GCC 6.3.0 20170516] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import pygit2
+>>> repo = pygit2.Repository('mozilla-mobile/android-components')
+>>> list(repo.branches)
+['master', 'origin/HEAD', 'origin/issue2727', 'origin/jhugman/3791-derive-icon-for-applink-app', 'origin/master', 'origin/releases/0.56', 'origin/releases/10.0', 'origin/releases/4.0', 'origin/releases/6.0', 'origin/staging', 'origin/trying', 'origin/web', 'origin/webchannel-support']
+>>> repo = pygit2.Repository('android-l10n')
+>>> list(repo.branches)
+['android-components-quarantine', 'master', 'origin/HEAD', 'origin/FirefoxReality-quarantine', 'origin/android-components-quarantine', 'origin/fenix-quarantine', 'origin/firefox-reality-quarantine', 'origin/master']
+>>> repo.lookup_reference['android-components-quarantine']
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: 'builtin_function_or_method' object is not subscriptable
+>>> repo.lookup_reference('android-components-quarantine')
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+_pygit2.InvalidSpecError: android-components-quarantine: the given reference name 'android-components-quarantine' is not valid
+>>> repo.lookup_reference('origin/android-components-quarantine')
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+KeyError: 'origin/android-components-quarantine'
+>>> fork_remote = repo.remotes.create('fork', 'ssh://git@github.com/Callek/android-l10n')
+>>> class MyRemoteCallbacks(pygit2.RemoteCallbacks):
+...     def credentials(self, url, username_from_url, allowed_types):
+...         if allowed_types & pygit2.credentials.GIT_CREDTYPE_USERNAME:
+...             return pygit2.Username("git")
+...         elif allowed_types & pygit2.credentials.GIT_CREDTYPE_SSH_KEY:
+...             return pygit2.Keypair("git", "ssh_key.pub", "ssh-key", "")
+... 
+>>> list(repo.branches)
+['android-components-quarantine', 'master', 'origin/HEAD', 'origin/FirefoxReality-quarantine', 'origin/android-components-quarantine', 'origin/fenix-quarantine', 'origin/firefox-reality-quarantine', 'origin/master']
+>>> repo.branches.get('android-components-quarantine')
+<_pygit2.Branch object at 0x7f544257b4f0>
+>>> b_ref = _
+>>> repo.ahead_behind(b_ref, 'origin/master')
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/usr/local/lib/python3.7/site-packages/pygit2/repository.py", line 1028, in ahead_behind
+    local = self.expand_id(local)
+TypeError: <_pygit2.Branch object at 0x7f544257b4f0>
+>>> repo.ahead_behind(b_ref, 'master')
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/usr/local/lib/python3.7/site-packages/pygit2/repository.py", line 1028, in ahead_behind
+    local = self.expand_id(local)
+TypeError: <_pygit2.Branch object at 0x7f544257b4f0>
+>>> b_ref.__dict__.keys()
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AttributeError: '_pygit2.Branch' object has no attribute '__dict__'
+>>> b_ref
+<_pygit2.Branch object at 0x7f544257b4f0>
+>>> b_ref.keys()
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AttributeError: '_pygit2.Branch' object has no attribute 'keys'
+>>> b_ref.reference
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AttributeError: '_pygit2.Branch' object has no attribute 'reference'
+>>> b_ref.ref
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AttributeError: '_pygit2.Branch' object has no attribute 'ref'
+>>> repo.references
+<pygit2.repository.References object at 0x7f543dce9828>
+>>> repo.lookup_reference(b_ref)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: unexpected _pygit2.Branch
+>>> pygit2.reference_is_valid('android-components-quarantine')
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AttributeError: module 'pygit2' has no attribute 'reference_is_valid'
+>>> pygit2.reference_is_valid_name('android-components-quarantine')
+False
+>>> pygit2.reference_is_valid_name('master')
+False
+>>> pygit2.reference_is_valid_name('HEAD')
+True
+>>> repo.lookup_branch('android-components-quarantine')
+<_pygit2.Branch object at 0x7f543e988b30>
+>>> b_ref
+<_pygit2.Branch object at 0x7f544257b4f0>
+>>> repo.revparse_single('android-components-quarantine')
+<_pygit2.Commit object at 0x7f543e988b10>
+>>> repo.ahead_behind(_, repo.revparse_single('master'))
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/usr/local/lib/python3.7/site-packages/pygit2/repository.py", line 1028, in ahead_behind
+    local = self.expand_id(local)
+TypeError: <_pygit2.Commit object at 0x7f543e988b10>
+>>> b_ref.TrackingDetails
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AttributeError: '_pygit2.Branch' object has no attribute 'TrackingDetails'
+>>> repo.revparse_single('android-components-quarantine')
+<_pygit2.Commit object at 0x7f543e988a70>
+>>> repo.ahead_behind(_.id, repo.revparse_single('master').id)
+(29, 0)
+>>> fork_remote.push([repo.revparse_single('android-components-quarantine').id],  callbacks=MyRemoteCallbacks())
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/usr/local/lib/python3.7/site-packages/pygit2/remote.py", line 485, in push
+    with StrArray(specs) as refspecs:
+  File "/usr/local/lib/python3.7/site-packages/pygit2/utils.py", line 75, in __init__
+    raise TypeError("Value must be a string")
+TypeError: Value must be a string
+>>> fork_remote.push([repo.revparse_single('android-components-quarantine')],  callbacks=MyRemoteCallbacks())
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/usr/local/lib/python3.7/site-packages/pygit2/remote.py", line 485, in push
+    with StrArray(specs) as refspecs:
+  File "/usr/local/lib/python3.7/site-packages/pygit2/utils.py", line 75, in __init__
+    raise TypeError("Value must be a string")
+TypeError: Value must be a string
+>>> fork_remote.push(['android-components-quarantine'],  callbacks=MyRemoteCallbacks())
+^CFrom cffi callback <function RemoteCallbacks._credentials_cb at 0x7f543eed0488>:
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.7/site-packages/pygit2/remote.py", line 294, in _credentials_cb
+    @ffi.callback('int (*credentials)(git_cred **cred, const char *url,'
+KeyboardInterrupt
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/usr/local/lib/python3.7/site-packages/pygit2/remote.py", line 487, in push
+    check_error(err)
+  File "/usr/local/lib/python3.7/site-packages/pygit2/errors.py", line 64, in check_error
+    raise GitError(message)
+_pygit2.GitError: callback failed to initialize SSH credentials
+>>> 
